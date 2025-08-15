@@ -38,6 +38,11 @@ void AXIMaster::traffic_generator_method()
         uint32_t beats = trans.get_data_length() / ((m_cfg_axi_write_bus_width + 1) << 2); // Convert bus width to bytes
         delay += sc_time(AXI_CLK_PERIOD) * beats; // Add delay based on the number of beats
         DEBUG_PRINT(3, "Write beats: " << beats << ", delay: " << delay);
+        this->powerModelPort->reportEvent(this->c_storeEventId);
+    }
+    else
+    {
+        this->powerModelPort->reportEvent(this->c_loadEventId);
     }
 
     DEBUG_PRINT(2,  "Issueing Req# " << m_transaction_count<< ": " << (cmd ? "WRITE" : "READ") << " request for addr: 0x" << hex << addr << " at time=" << sc_time_stamp() );
@@ -104,4 +109,20 @@ uint32_t AXIMaster::generate_data_len()
     // Generate a random 4-byte aligned length
     int randomLength = dist(gen) * 4;
     return randomLength;
+}
+
+void AXIMaster::end_of_elaboration(){
+
+  this->c_State1Id = this->powerModelPort->registerState(
+    this->name(),
+    std::unique_ptr<ConstantCurrentState>(new ConstantCurrentState("State1", this->m_state1_current)));
+  this->c_State2Id = this->powerModelPort->registerState(
+    this->name(),
+    std::unique_ptr<ConstantCurrentState>(new ConstantCurrentState("State2", this->m_state2_current)));
+  this->c_loadEventId = this->powerModelPort->registerEvent(
+    this->name(),
+    std::unique_ptr<ConstantEnergyEvent>(new ConstantEnergyEvent("loadEvent", this->m_load_energy)));
+  this->c_storeEventId = this->powerModelPort->registerEvent(
+    this->name(),
+    std::unique_ptr<ConstantEnergyEvent>(new ConstantEnergyEvent("storeEvent", this->m_store_energy)));
 }

@@ -61,7 +61,8 @@ Total Write Delay: 20750 ns
 ## Power Data Analysis:
 I ran multiple experiments on this model collecting data by varying these knobs individually or together. Based on the data I collected, this is the performance analysis I observed. 
 
-References:
+### References:
 
 [https://github.com/UoS-EEC/fused](https://github.com/UoS-EEC/fused)
+
 [https://github.com/zahrajnb/DomainPowerModeling](https://github.com/zahrajnb/DomainPowerModeling)

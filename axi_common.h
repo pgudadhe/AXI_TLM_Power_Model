@@ -9,6 +9,10 @@
 #include <tlm_utils/simple_initiator_socket.h>
 #include <tlm_utils/simple_target_socket.h>
 #include <tlm_utils/peq_with_cb_and_phase.h>
+#include "PowerModelChannel.hpp"
+#include "PowerModelBridge.hpp"
+#include "ConstantEnergyEvent.hpp"
+#include "ConstantCurrentState.hpp"
 
 using namespace std;
 using namespace sc_core;

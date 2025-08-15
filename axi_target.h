@@ -6,28 +6,27 @@
 class AXITarget : public sc_module {
 public:
     tlm_utils::simple_target_socket<AXITarget> socket;
+    PowerModelEventOutPort powerModelPort{"powerModelPort"};
 
     //SC_HAS_PROCESS(AXITarget); 
 
-    AXITarget(sc_module_name name, uint32_t debug_level, uint32_t read_bus_width) : 
+    AXITarget(  sc_module_name name, 
+                uint32_t debug_level, 
+                uint32_t read_bus_width, 
+                double read_energy_consumption, 
+                double write_energy_consumption, 
+                double state1_current, 
+                double state2_current) : 
             sc_module(name),
             m_cfg_debug_level(debug_level),
+            m_read_energy_consumption(read_energy_consumption),
+            m_write_energy_consumption(write_energy_consumption),
+            m_state1_current(state1_current),
+            m_state2_current(state2_current),
             m_cfg_axi_read_bus_width(read_bus_width),
             socket("socket")
     {
         socket.register_nb_transport_fw(this, &AXITarget::nb_transport_fw);
-
-        //SC_METHOD(process_rd_req_method);
-        //sensitive << m_process_rd_req_event;
-        //dont_initialize();
-
-        //SC_METHOD(process_wr_req_method);
-        //sensitive << m_process_wr_req_event;
-        //dont_initialize();
-
-        //SC_THREAD(process_rd_req_thread);
-
-        //SC_THREAD(process_wr_req_thread);
     }   
 
     void end_of_simulation() override {
@@ -36,16 +35,20 @@ public:
     tlm_sync_enum nb_transport_fw(tlm_generic_payload& trans, tlm_phase& phase, sc_time& delay) ;
     tlm_sync_enum process_transaction(tlm_generic_payload& trans, tlm_phase& phase, sc_time& delay) ;
 
-private:
-    //void process_rd_req_method();
-    //sc_event m_process_rd_req_event; // Event to trigger processing of read requests
-    //sc_fifo<tlm_generic_payload& > m_rd_req_fifo; // FIFO for read requests
-    //void process_rd_req_thread();
+    // Power Modeling related methods and variables
+    double m_read_energy_consumption;
+    double m_write_energy_consumption;
+    double m_state1_current;
+    double m_state2_current;
 
-    //void process_wr_req_method();
-    //sc_event m_process_wr_req_event; // Event to trigger processing of write requests
-    //sc_fifo<tlm_generic_payload& > m_wr_req_fifo; // FIFO for write requests
-    //void process_wr_req_thread();
+    int m_nbtransportReadEventId = {-1}; // Dummy power event
+    int m_nbtransportWriteEventId = {-1}; // Dummy power event
+    int m_State1Id = {-1}; // Leakage power
+    int m_State2Id = {-1}; // Leakage power
+
+  virtual void end_of_elaboration() override;
+
+private:
 
     uint32_t m_cfg_axi_read_bus_width = 0; // 0:4B, 1:8B, 2:16B, 3:32B, 4:64B
     uint32_t m_cfg_debug_level = 0; // Debug level
