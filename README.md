@@ -63,6 +63,9 @@ Total Write Delay: 20750 ns
 ## Power Data Analysis:
 I ran multiple experiments on this model collecting data by varying these knobs individually or together. Based on the data I collected, this is the PnP analysis I observed. 
 
+[Power Data Analysis is WIP. I will post the graphs here shortly after consulting somebody with deeper knowledge on this topic.]
+
+
 ### References:
 
 [https://github.com/UoS-EEC/fused](https://github.com/UoS-EEC/fused)
