@@ -10,6 +10,8 @@ git clone https://github.com/UoS-EEC/fused
 Follow the instruction to build the library. We will be linking this library in our AXI project.
 I will also be using Power Logger wrapper created by zahrajnb in my code. This wrapper class provided useful utilities to simplify the use of fused library.
 
+I am using the same base of AXI Performance Model and adding Power Modeling aspects to the same scenario. The way to run the model is exactly similar.
+
 In this project we are going to imagine a scenario of a AXI Master and AXI Target module connected by AMBA AXI4 bus. The master could be a hardware accelerator creating a series of Read/Write demands to the target which could be the host memory. I assume that behind the development of this performance model, the intention of the Architect is to find out what would the most optimal bandwidth for Read and Write bus of the AXI data channel. AXI bus consists of multiple channels address, data, response channels for both read and write operations as shown below:
 
 
@@ -28,7 +30,7 @@ Follow the steps in these articles to build the model.
 This model provides various knobs to configure various scenarios.
 
 ```bash
-Usage: ./AXI_TLM_PERF_MODEL [options]
+Usage: ./AXI_TLM_POWER_MODEL [options]
 Options:
   -h                           Show this help message
   -n <no. of reqs>             Specify number of R/W requests
@@ -37,7 +39,7 @@ Options:
   -d <debug level>             Specify debug level (0-3)
   -rb <AXI Read Bus Width>     Read bus width. 0:4B, 1:8B, 2:16B 3:32B, 4:64B
   -wb <AXI Read Bus Width>     Write bus width. 0:4B, 1:8B, 2:16B 3:32B, 4:64B
-Example: ./AXI_TLM_PERF_MODEL -n 10 -r 0.5 -rb 2 -wb 3
+Example: ./AXI_TLM_POWER_MODEL -n 10 -r 0.5 -rb 2 -wb 3
 This will run the simulation with 10 requests, 50% Write & 50% Read requests,
 with Read bus width of 16B and Write bus width of 32B.
 Default values: -n 10, -r 0.5, -rb 0, -wb 0
@@ -59,7 +61,7 @@ Total Write Delay: 20750 ns
 ```
 
 ## Power Data Analysis:
-I ran multiple experiments on this model collecting data by varying these knobs individually or together. Based on the data I collected, this is the performance analysis I observed. 
+I ran multiple experiments on this model collecting data by varying these knobs individually or together. Based on the data I collected, this is the PnP analysis I observed. 
 
 ### References:
 
